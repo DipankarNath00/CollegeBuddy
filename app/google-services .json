@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "252865912132",
+    "project_id": "college-buddy-6e464",
+    "storage_bucket": "college-buddy-6e464.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:252865912132:android:f4f3295c43730c79b44b11",
+        "android_client_info": {
+          "package_name": "com.example.collegebuddy"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZ5RAKm7abjC-fzR_BtXgUVv3UKJhXGUk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
