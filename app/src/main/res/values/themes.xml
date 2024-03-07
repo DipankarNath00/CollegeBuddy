@@ -3,7 +3,18 @@
     <style name="Base.Theme.CollegeBuddy" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/darkPurple</item>
+        <item name="colorPrimaryVariant">@color/lightPurple</item>
+        <item name="colorOnPrimary">@color/peach</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+
     </style>
 
     <style name="Theme.CollegeBuddy" parent="Base.Theme.CollegeBuddy" />
+    <style name="Theme.CollegeBuddy.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name="Theme.CollegeBuddy.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.CollegeBuddy.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

@@ -3,7 +3,9 @@ package com.example.collegebuddy.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils; // Import for TextUtils.isEmpty()
 import android.view.View;
@@ -82,6 +84,7 @@ public class Register extends AppCompatActivity {
             return;
         }
 
+
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -89,6 +92,16 @@ public class Register extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign-in successful, store user data
                             FirebaseUser user = mAuth.getCurrentUser();
+                            SharedPreferences sharedPreferences = getSharedPreferences("user_data", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("userName",username);
+
+                            editor.putString("email", email);
+                            editor.putString("role",userType);
+                            editor.putString("password",password);
+                            editor.putString("uid", user.getUid());
+                           // Add other user information as needed
+                            editor.apply();
                             storeUserData(user, username, userType);
                             Toast.makeText(Register.this, "Account created successfully", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(Register.this, LoginActivity.class));
@@ -107,6 +120,7 @@ public class Register extends AppCompatActivity {
         userData.put("userId",user.getUid());
         userData.put("email",user.getEmail());
         userData.put("role",role);
+
         db.collection("Users").document(user.getUid()).set(userData)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -115,6 +129,13 @@ public class Register extends AppCompatActivity {
                             // User data stored successfully
                             Toast.makeText(Register.this, "Registration successful!", Toast.LENGTH_SHORT).show();
                             // Navigate to the appropriate dashboard based on role
+                            if (role.equals("Teacher")){
+                                Intent intent = new Intent(Register.this, TeacherActivity.class);
+                                startActivity(intent);
+                                finish();
+                            }else if(role.equals("Student")){
+                                //Navigate to student activity
+                            }
                         } else {
                             // Error handling
                             Exception e = task.getException();
