@@ -8,6 +8,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,11 +20,11 @@ import com.example.collegebuddy.model.SubjectListModel;
 import java.util.ArrayList;
 
 public class subjectAdapter extends RecyclerView.Adapter <MyViewHolder>{
-    private ArrayList<SubjectListModel> data;
-    public subjectAdapter(ArrayList<SubjectListModel> data) {
+    private List<SubjectListModel> data;
+    public subjectAdapter(List<SubjectListModel> data) {
         this.data = data;
     }
-    public void updateData(ArrayList<SubjectListModel> newData){
+    public void updateData(List<SubjectListModel> newData){
         this.data= newData;
         notifyDataSetChanged();
     }

@@ -12,9 +12,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.collegebuddy.R;
+import com.example.collegebuddy.util.MySharedPreferencesUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
@@ -29,6 +31,7 @@ import java.util.Map;
 public class Register extends AppCompatActivity {
 
     private EditText editTextUsername, editTextEmail, editTextPassword, editTextConfirmPassword;
+    private TextView textViewLogin;
     private Spinner spinnerUserType;
     private Button buttonRegister;
     private FirebaseAuth mAuth;
@@ -39,7 +42,6 @@ public class Register extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        // Initialize Firebase App (if not already done in another activity)
         // Consider moving this to a central initialization point if applicable
         FirebaseApp.initializeApp(this);
 
@@ -53,6 +55,14 @@ public class Register extends AppCompatActivity {
         editTextConfirmPassword = findViewById(R.id.editTextConfirmPassword);
         spinnerUserType = findViewById(R.id.spinnerUserType);
         buttonRegister = findViewById(R.id.buttonRegister);
+        textViewLogin=findViewById(R.id.textViewLogin);
+        textViewLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(Register.this,LoginActivity.class));
+                finish();
+            }
+        });
 
         // Handle register button click
         buttonRegister.setOnClickListener(new View.OnClickListener() {
@@ -68,7 +78,7 @@ public class Register extends AppCompatActivity {
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
         String confirmPassword = editTextConfirmPassword.getText().toString().trim();
-        String userType = spinnerUserType.getSelectedItem().toString();
+        String userType = spinnerUserType.getSelectedItem().toString().trim();
 
         // Validate user input using TextUtils.isEmpty() for better readability
         if (TextUtils.isEmpty(username) || TextUtils.isEmpty(email) || TextUtils.isEmpty(password) || TextUtils.isEmpty(userType)) {
@@ -92,16 +102,15 @@ public class Register extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign-in successful, store user data
                             FirebaseUser user = mAuth.getCurrentUser();
-                            SharedPreferences sharedPreferences = getSharedPreferences("user_data", Context.MODE_PRIVATE);
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.putString("userName",username);
-
-                            editor.putString("email", email);
-                            editor.putString("role",userType);
-                            editor.putString("password",password);
-                            editor.putString("uid", user.getUid());
+                            // Store user information using MySharedPreferencesUtil
+                            MySharedPreferencesUtil.saveUserData(
+                                    Register.this,
+                                    email,userType,
+                                    password,
+                                    user.getUid(),
+                                    username  // Assuming username is the variable you want to store
+                            );
                            // Add other user information as needed
-                            editor.apply();
                             storeUserData(user, username, userType);
                             Toast.makeText(Register.this, "Account created successfully", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(Register.this, LoginActivity.class));
@@ -116,9 +125,7 @@ public class Register extends AppCompatActivity {
     private void storeUserData(FirebaseUser user,String username,String role){
         //Create a new document in user collection in firestore
         Map<String ,Object> userData = new HashMap<>();
-        userData.put("username",username);
-        userData.put("userId",user.getUid());
-        userData.put("email",user.getEmail());
+        userData.put("name",username);
         userData.put("role",role);
 
         db.collection("Users").document(user.getUid()).set(userData)
@@ -130,7 +137,7 @@ public class Register extends AppCompatActivity {
                             Toast.makeText(Register.this, "Registration successful!", Toast.LENGTH_SHORT).show();
                             // Navigate to the appropriate dashboard based on role
                             if (role.equals("Teacher")){
-                                Intent intent = new Intent(Register.this, TeacherActivity.class);
+                                Intent intent = new Intent(Register.this,LoginActivity.class);
                                 startActivity(intent);
                                 finish();
                             }else if(role.equals("Student")){

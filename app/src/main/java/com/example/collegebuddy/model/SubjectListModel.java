@@ -3,10 +3,19 @@ package com.example.collegebuddy.model;
 import android.widget.TextView;
 
 public class SubjectListModel {
-    String subjectName,branchSem;
+    String subjectName,branchSem,subjectId;
     int image;
 
-    public SubjectListModel(String subjectName, String branchSem, int image) {
+    public String getSubjectId() {
+        return subjectId;
+    }
+
+    public void setSubjectId(String subjectId) {
+        this.subjectId = subjectId;
+    }
+
+    public SubjectListModel(String subjectId,String subjectName, String branchSem, int image) {
+        this.subjectId=subjectId;
         this.subjectName = subjectName;
         this.branchSem = branchSem;
         this.image = image;

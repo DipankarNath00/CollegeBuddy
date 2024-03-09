@@ -1,4 +1,4 @@
-package com.example.collegebuddy.ViewModel;
+package com.example.collegebuddy.viewModel;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
