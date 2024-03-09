@@ -45,7 +45,7 @@ public class AddNewSubject extends AppCompatActivity {
                 String email = MySharedPreferencesUtil.getEmail(AddNewSubject.this);
 
                 SubjectsViewModel subjectsViewModel= new ViewModelProvider(AddNewSubject.this).get(SubjectsViewModel.class);
-                subjectsViewModel.addNewSubject(email+subjectName,subjectName,password,branchSem,teacherId);
+                subjectsViewModel.addNewSubject(subjectName,password,branchSem);
                 startActivity(new Intent(AddNewSubject.this, TeacherActivity.class));
                 finish();
 

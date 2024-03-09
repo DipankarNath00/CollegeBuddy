@@ -2,7 +2,10 @@ package com.example.collegebuddy.model;
 
 import android.widget.TextView;
 
+import com.example.collegebuddy.R;
+
 public class SubjectListModel {
+    private static final int DEFAULT_IMAGE = R.drawable.ic_book;
     String subjectName,branchSem,subjectId;
     int image;
 
@@ -14,11 +17,11 @@ public class SubjectListModel {
         this.subjectId = subjectId;
     }
 
-    public SubjectListModel(String subjectId,String subjectName, String branchSem, int image) {
+    public SubjectListModel(String subjectId,String subjectName, String branchSem) {
         this.subjectId=subjectId;
         this.subjectName = subjectName;
         this.branchSem = branchSem;
-        this.image = image;
+        this.image = DEFAULT_IMAGE;
     }
 
     public String getSubjectName() {

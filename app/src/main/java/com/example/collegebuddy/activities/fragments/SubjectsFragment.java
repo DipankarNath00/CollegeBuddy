@@ -10,6 +10,8 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,7 +37,6 @@ public class SubjectsFragment extends Fragment {
     private subjectAdapter adapter;
     private ProgressBar subjectProgressBar;
     private LinearLayoutManager linearLayoutManager;
-    private FirebaseFirestore firestore;
     private FirebaseAuth auth;
     private SubjectsViewModel subjectsViewModel;
 
@@ -68,61 +69,33 @@ public class SubjectsFragment extends Fragment {
                 startActivity(intent);
             }
         });
-        // Initialize Firebase components
-        firestore = FirebaseFirestore.getInstance();
-        auth = FirebaseAuth.getInstance();
+        subjectsViewModel = new ViewModelProvider(this).get(SubjectsViewModel.class);
+        //Fetch data when a user mavigates to this page
+        LiveData<List<SubjectListModel>> subjects=subjectsViewModel.getSubjects(requireContext());
+        adapter.updateData(subjects.getValue());
+
+        //
+        subjectsViewModel.getSubjects(requireContext()).observe(getViewLifecycleOwner(), new Observer<List<SubjectListModel>>() {
+            @Override
+            public void onChanged(List<SubjectListModel> subjects) {
+                if (subjects!=null){
+                    adapter.updateData(subjects);
+                }else {
+                    // Handle case when no subjects are available
+                    Toast.makeText(requireContext(), "No subjects available", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
 
 
 
-        // Retrieve the user's document ID
-        FirebaseUser currentUser = auth.getCurrentUser();
-        if (currentUser != null) {
-            String userId = currentUser.getUid();
 
-            // Retrieve user document
-            firestore.collection("users")
-                    .document(userId)
-                    .get()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document != null && document.exists()) {
-                                // Extract subject IDs from the user document
-                                List<String> subjectIds = (List<String>) document.get("subjects");
 
-                                // Fetch subjects from the subjects collection
-                                if (subjectIds != null && !subjectIds.isEmpty()) {
-                                    fetchSubjects(subjectIds);
-                                } else {
-                                    // Handle the case when the user has no subjects
-                                    Toast.makeText(requireContext(), "User has no subjects", Toast.LENGTH_SHORT).show();
-                                }
-                            } else {
-                                // Handle the case when the user document doesn't exist
-                                Toast.makeText(requireContext(), "User document not found", Toast.LENGTH_SHORT).show();
-                            }
-                        } else {
-                            // Handle errors while retrieving the user document
-                            Toast.makeText(requireContext(), "Error: " + task.getException(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-        }
 
 
         return view;
     }
 
-    private void fetchSubjects(List<String> subjectIds) {
-        // Fetch subjects from the subjects collection
-        subjectsViewModel.subjectList.observe(getViewLifecycleOwner(), subjects -> {
-            if (subjects != null) {
-                // Update your UI with the list of subjects
-                adapter.setSubjects(subjects);
-            } else {
-                // Handle the case when subjects are null
-                Toast.makeText(requireContext(), "Error fetching subjects", Toast.LENGTH_SHORT).show();
-            }
-        });
 
-    }
 }
